@@ -13,17 +13,18 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import androidx.annotation.OptIn
-import androidx.lifecycle.viewModelScope
 import com.example.loginregistration.Database.BookDatabase
+import com.example.loginregistration.Database.Dao.BookDao
+import com.example.loginregistration.Database.Dao.CategoryDao
+import com.example.loginregistration.Database.Dao.MyLibraryDao
 
 
 // ===== ViewModel =====
 // ViewModel: The link between the data base and the
-class LibraryViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = BookDatabase.getInstance(application)
-    private val daoCategory = db.CategoryDao()
-    private val daobook = db.BookDao()
-    private val daolibrary = db.MyLibraryDao()
+class LibaryViewModelForTesting(application: Application, private val daobook: BookDao = BookDatabase.getInstance(application).BookDao(),
+                       private val daoCategory: CategoryDao = BookDatabase.getInstance(application).CategoryDao(),
+                       private val daolibrary: MyLibraryDao = BookDatabase.getInstance(application).MyLibraryDao()) : AndroidViewModel(application) {
+
 
     //===============Book(Admin Side)=============
     val allBooks: Flow<List<Book>> = daobook.getAllBooks()
@@ -75,13 +76,14 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // ========Bokk in home ============
-    val newestBooks: Flow<List<Book>> = daobook.getNewestBooks()
+    suspend fun searchBooks(bookname: String): List<Book> {
 
-    suspend fun searchBooks(query: String): List<Book> {
-        return daobook.searchBooks(query)
+        return daobook.searchBooks(bookname)
     }
 }
+
+
+
 
 
 

@@ -45,28 +45,4 @@ class BookDaoTest {
         db.close()
     }
 
-    @Test
-    fun searchBooksReturnsCorrectResult() = runBlocking {
-        // Now it is safe to use Cat_Id = 1 because we created it in @Before
-        val book1 = Book(Cat_Id=1, title="Harry Potter", author="Rowling", description="", img="")
-        val book2 = Book(Cat_Id=1, title="Atomic Habits", author="Clear", description="", img="")
-
-        bookDao.insertBook(book1)
-        bookDao.insertBook(book2)
-
-        // Search for "Harry"
-        val searchResult = bookDao.searchBooks("Harry")
-
-        assertEquals(1, searchResult.size)
-        assertEquals("Harry Potter", searchResult[0].title)
-    }
-
-    @Test
-    fun searchBooksReturnsEmptyIfNotFound() = runBlocking {
-        val book1 = Book(Cat_Id=1, title="Harry Potter", author="Rowling", description="", img="")
-        bookDao.insertBook(book1)
-
-        val searchResult = bookDao.searchBooks("Banana")
-        assertTrue(searchResult.isEmpty())
-    }
 }

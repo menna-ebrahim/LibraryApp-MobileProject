@@ -84,4 +84,14 @@ kapt("androidx.room:room-compiler:$room_version") // <--- 2. IMPORTANT: Add this
     // Coil for image loading (Replaces Glide in Compose)
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    // test
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation("com.google.truth:truth:1.1.3")
+
+//for testing viewmodel
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.mockito:mockito-core:5.1.0")
 }

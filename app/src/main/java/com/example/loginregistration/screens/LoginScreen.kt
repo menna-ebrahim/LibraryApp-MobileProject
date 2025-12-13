@@ -23,21 +23,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.loginregistration.Database.Firebase
 import com.example.loginregistration.screens.RegisterActivity
-
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-
+import com.example.loginregistration.AuthManger.LoginManager
 import kotlin.jvm.java
 
 @Composable
 
 fun LoginScreen() {
+
     val context = LocalContext.current
-    val auth = FirebaseAuth.getInstance()
     val contextIntent = LocalContext.current
 
+    val loginManager = remember {
+        LoginManager(Firebase())
+    }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -71,76 +71,45 @@ fun LoginScreen() {
         Button(
             enabled = !isLoading,
             onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    isLoading = true
+                isLoading = true
 
-                    auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                        isLoading = false
+                loginManager.validateAndLogin(email, password) { result ->
+                    isLoading = false
 
-                        if (task.isSuccessful) {
+                    when (result) {
+                        "AdminSuccess" -> {
+                            Toast.makeText(context, "YES Admin", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(context, HomeActivity::class.java)
+                            context.startActivity(intent)
 
-                            val userId = auth.currentUser!!.uid
-                            val db = FirebaseFirestore.getInstance()
-                            if (userId != null) {
+                            // 2. PASS THE ADMIN FLAG
+                            intent.putExtra("IS_ADMIN", true)
 
-                                db.collection("users").document(userId).get()
-                                    .addOnSuccessListener { document ->
-                                        if (document != null) {
-                                            val role = document.getString("role")
+                            //new lines for admin panal
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            context.startActivity(intent)
+                            (context as? Activity)?.finish()
+                        }
+                        "UserSuccess" -> {
+                            Toast.makeText(context, "Yes User", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(context, HomeActivity::class.java)
+                            context.startActivity(intent)
 
-                                            if (role == "Admin") {
-                                                Toast.makeText(context, "YES Admin", Toast.LENGTH_SHORT).show()
+                         (context as? Activity)?.finish()
 
-
-                                                  val intent = Intent(context, HomeActivity::class.java)
-                                                 context.startActivity(intent)
-
-                                                // 2. PASS THE ADMIN FLAG
-                                                intent.putExtra("IS_ADMIN", true)
-
-                                                //new lines for admin panal
-                                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                                context.startActivity(intent)
-                                                (context as? Activity)?.finish()
-
-                                            } else {
-                                                Toast.makeText(context, "Yes User", Toast.LENGTH_SHORT).show()
-
-                                                 val intent = Intent(context, HomeActivity::class.java)
-                                                 context.startActivity(intent)
-                                            }
-                                            //  (context as? Activity)?.finish()
-                                        }
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(context, "Try again", Toast.LENGTH_SHORT).show()
-                                    }
-                            }
-                            email = ""
-                            password = ""
-
-                        } else {
-                            try {
-                                throw task.exception!!
-                            } catch (e: FirebaseAuthInvalidCredentialsException) {
-                                Toast.makeText(
-                                    context,
-                                    "Account is not exist",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-
-                            }
+                        }
+                        "Login Failed" -> {
+                            Toast.makeText(context, "Account does not exist or wrong pass", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+                            Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
                         }
                     }
-                } else {
-                    Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 }
             }
         ) {
             Text(text = if (isLoading) "Loading..." else "login")
         }
-
         Spacer(modifier = Modifier.height(10.dp))
 
         Button(onClick = {

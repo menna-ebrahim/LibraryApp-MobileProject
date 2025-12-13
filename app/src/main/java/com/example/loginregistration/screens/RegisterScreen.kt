@@ -29,20 +29,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.loginregistration.Database.Firebase
+import com.example.loginregistration.AuthManger.RegistrationManager
 import com.example.loginregistration.screens.LoginActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 
 @Composable
 fun RegisterScreen() {
+
     val context = LocalContext.current
-    val auth = FirebaseAuth.getInstance()
     val contextIntent = LocalContext.current
+
+    val registrationManager = remember {
+        RegistrationManager(Firebase())
+    }
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirm by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
     Column(
@@ -51,15 +57,11 @@ fun RegisterScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Create Account", fontSize = 30.sp)
-
         Spacer(modifier = Modifier.height(20.dp))
 
         TextField(
             value = email,
-            onValueChange = {
-                email = it
-                showError = false
-            },
+            onValueChange = { email = it; showError = false },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(0.8f)
         )
@@ -68,11 +70,17 @@ fun RegisterScreen() {
 
         TextField(
             value = password,
-            onValueChange = {
-                password = it
-                showError = false
-            },
+            onValueChange = { password = it; showError = false },
             label = { Text("Password") },
+            modifier = Modifier.fillMaxWidth(0.8f)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        TextField(
+            value = confirm,
+            onValueChange = { confirm = it; showError = false },
+            label = { Text("Confirm Password") },
             modifier = Modifier.fillMaxWidth(0.8f)
         )
 
@@ -81,49 +89,26 @@ fun RegisterScreen() {
         Button(
             enabled = !isLoading,
             onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    isLoading = true
+                isLoading = true
 
-                    auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener { task ->
-                            isLoading = false
+                registrationManager.validateAndRegister(email, password, confirm) { resultMessage ->
+                    isLoading = false
 
-                            if (task.isSuccessful) {
+                    if (resultMessage == "Success") {
 
-                                val userId = auth.currentUser?.uid
-                                val db = Firebase.firestore
+                        Toast.makeText(context, "Account Created Successfully", Toast.LENGTH_SHORT).show()
 
-                                val userData = hashMapOf(
-                                    "email" to email,
-                                    "role" to "user"
-                                )
-                                email = ""
-                                password = ""
-                                if (userId != null) {
-                                    db.collection("users").document(userId).set(userData)
-                                        .addOnSuccessListener {
-                                            Toast.makeText(
-                                                context,
-                                                "Account Created ",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                        .addOnFailureListener {
-                                            Toast.makeText(
-                                                context,
-                                                "Saved failed: ${it.message}",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                }
+                        email = ""
+                        password = ""
+                        confirm = ""
 
+                    } else {
 
-                            } else {
-                                showError = true
-                            }
-                        }
-                } else {
-                    Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                        showError = true
+                        errorMessage = resultMessage
+                        Toast.makeText(context, resultMessage, Toast.LENGTH_SHORT).show()
+
+                    }
                 }
             }
         ) {
@@ -134,11 +119,11 @@ fun RegisterScreen() {
 
         Button(onClick = {
             val intent = Intent(contextIntent, LoginActivity::class.java)
-
             contextIntent.startActivity(intent)
         }) {
             Text("Back to Login")
         }
+
         Spacer(modifier = Modifier.height(10.dp))
 
         if (showError) {
@@ -149,8 +134,9 @@ fun RegisterScreen() {
                     .border(1.dp, Color.Red, RoundedCornerShape(8.dp))
                     .padding(16.dp)
             ) {
+
                 Text(
-                    text = "Format Email is not correct\nor Password must be at least 6 chars\nor Try with other email",
+                    text = errorMessage.ifEmpty { "Registration Failed" },
                     color = Color.Red,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
@@ -158,11 +144,11 @@ fun RegisterScreen() {
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
             LaunchedEffect(Unit) {
-                delay(30000)
+
+                delay(5000)
                 showError = false
+
             }
         }
     }

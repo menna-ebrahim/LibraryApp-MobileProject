@@ -45,20 +45,18 @@ import java.util.Locale
 // 1. MUST Inherit from ComponentActivity
 class AdminActivity : ComponentActivity() {
 
-    // 2. MUST override onCreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize ViewModel
         val viewModel = LibraryViewModel(application)
 
         setContent {
-            // Start the UI
+
             AdminMain(viewModel)
         }
     }
 
-    // --- Helper Variables ---
+    // --- Helper Color Variables ---
     val BeigeBackground = Color(0xFFF5F2EF)
     val PrimaryTerracotta = Color(0xFFC67C63)
     val DarkText = Color(0xFF4A3B32)
@@ -363,4 +361,5 @@ class AdminActivity : ComponentActivity() {
             }
         }
     }
+
 }

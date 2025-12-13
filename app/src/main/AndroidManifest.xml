@@ -16,6 +16,8 @@
         <activity
             android:name=".screens.RegisterActivity"
             android:exported="false" />
+        <activity android:name=".screens.BookDetailsActivity" />
+        <activity android:name=".screens.CategoryBooksActivity" />
 
         <activity android:name=".screens.MyLibraryActivity" />
 
@@ -34,6 +36,7 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.LoginRegistration">
+
 
 
 

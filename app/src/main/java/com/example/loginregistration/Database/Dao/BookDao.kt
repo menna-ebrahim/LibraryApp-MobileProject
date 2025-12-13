@@ -18,13 +18,12 @@ interface BookDao {
     fun getAllBooks(): Flow<List<Book>>
 
 
-    @Query("SELECT * FROM books ORDER BY createdAt DESC LIMIT 3")
-    suspend fun getNewestBooks(): List<Book>
+    @Query("SELECT * FROM Books ORDER BY id DESC LIMIT 5")
+    fun getNewestBooks(): Flow<List<Book>>
 
 
     @Query("SELECT * FROM Books WHERE Cat_Id = :catId")
-    suspend fun getBooksByCategory(catId: Int): List<Book>
-
+    fun getBooksByCategory(catId: Int): Flow<List<Book>>
 
     @Query("SELECT * FROM Books WHERE title LIKE '%' || :query || '%' OR author LIKE '%' || :query || '%'")
     suspend fun searchBooks(query: String): List<Book>
