@@ -3,9 +3,9 @@ package com.example.loginregistration.screens
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import androidx.activity.ComponentActivity // Import this
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent // Import this
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,7 +40,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-// 1. MUST Inherit from ComponentActivity
+
 class AdminActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

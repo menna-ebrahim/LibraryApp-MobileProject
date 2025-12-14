@@ -64,7 +64,7 @@ class LibraryViewModelTest {
     // === Test Case 1: Admin Adds a Book ===
     @Test
     fun admin_addsBook_verifiesDaoInsertCalled() = runTest {
-        // 1. Arrange
+
         val newBook = Book(
             id = 1,
             Cat_Id = 10,
@@ -80,14 +80,14 @@ class LibraryViewModelTest {
 
         advanceUntilIdle()
 
-        // 3. Assert
+        //  Assert
         verify(mockBookDao).insertBook(newBook)
     }
 
     // === Test Case 2: Admin Deletes a Book ===
     @Test
     fun admin_deletesBook_verifiesDaoDeleteCalled() = runTest {
-        // 1. Arrange
+
         val bookToDelete = Book(
             id = 5,
             Cat_Id = 20,
@@ -98,8 +98,6 @@ class LibraryViewModelTest {
             categoryName = "General",
             createdAt = 12345L
         )
-
-        // 2. Act
         viewModel.deleteBook(bookToDelete)
 
         advanceUntilIdle()
