@@ -69,6 +69,7 @@ fun LoginScreen() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
+            //To display loading or login on button
             enabled = !isLoading,
             onClick = {
                 isLoading = true
