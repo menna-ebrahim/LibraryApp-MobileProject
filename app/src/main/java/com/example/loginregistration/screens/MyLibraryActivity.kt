@@ -22,31 +22,26 @@ import androidx.compose.ui.unit.dp
 import com.example.loginregistration.Database.Enities.Book
 import com.example.loginregistration.Database.Enities.LibraryViewModel
 import com.example.loginregistration.R
-
-// 1. MUST inherit from ComponentActivity
 class MyLibraryActivity : ComponentActivity() {
 
     val BeigeBackground = Color(0xFFF5F2EF)
     val PrimaryTerracotta = Color(0xFFC67C63)
     val DarkText = Color(0xFF4A3B32)
     val SurfaceWhite = Color(0xFFFFFFFF)
-
-    // 2. MUST override onCreate to set the content
+//
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize the ViewModel manually (since we aren't using a DI library here)
         val viewModel = LibraryViewModel(application)
 
         setContent {
-            // Show the screen
             MyLibraryScreen(
                 viewModel = viewModel,
-                onBackClick = { finish() } // Close activity when back is clicked
+                onBackClick = { finish() }
             )
         }
     }
-
+//compose for  myLibraryPage
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MyLibraryScreen(
@@ -146,7 +141,7 @@ class MyLibraryActivity : ComponentActivity() {
                         contentScale = ContentScale.Crop
                     )
                 }
-
+                // put space between items
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
