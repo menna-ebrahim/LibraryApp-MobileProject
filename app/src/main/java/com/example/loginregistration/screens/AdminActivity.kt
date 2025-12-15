@@ -39,7 +39,10 @@ import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.platform.LocalContext
+import android.app.Activity
 
 class AdminActivity : ComponentActivity() {
 
@@ -88,6 +91,8 @@ class AdminActivity : ComponentActivity() {
         var currentScreen by remember { mutableStateOf("Dashboard") }
         var bookToEdit by remember { mutableStateOf<Book?>(null) }
 
+        val context = LocalContext.current
+
         Scaffold(
             topBar = {
                 Row(
@@ -95,26 +100,42 @@ class AdminActivity : ComponentActivity() {
                         .fillMaxWidth()
                         .background(BeigeBackground)
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Navigation Buttons
-                    Button(
-                        onClick = { currentScreen = "Dashboard" },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (currentScreen == "Dashboard") PrimaryTerracotta else Color.Transparent,
-                            contentColor = if (currentScreen == "Dashboard") Color.White else DarkText
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    ) { Text("Dashboard", fontWeight = FontWeight.Bold) }
+                    // ---  Back Icon---
+                    IconButton(
+                        onClick = {
 
-                    Button(
-                        onClick = { currentScreen = "Categories" },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (currentScreen == "Categories") PrimaryTerracotta else Color.Transparent,
-                            contentColor = if (currentScreen == "Categories") Color.White else DarkText
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    ) { Text("Categories", fontWeight = FontWeight.Bold) }
+                            (context as? Activity)?.finish()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = DarkText
+                        )
+                    }
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(
+                            onClick = { currentScreen = "Dashboard" },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (currentScreen == "Dashboard") PrimaryTerracotta else Color.Transparent,
+                                contentColor = if (currentScreen == "Dashboard") Color.White else DarkText
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        ) { Text("Dashboard", fontWeight = FontWeight.Bold) }
+
+                        Button(
+                            onClick = { currentScreen = "Categories" },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (currentScreen == "Categories") PrimaryTerracotta else Color.Transparent,
+                                contentColor = if (currentScreen == "Categories") Color.White else DarkText
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        ) { Text("Categories", fontWeight = FontWeight.Bold) }
+                    }
                 }
             }
         ) { innerPadding ->
