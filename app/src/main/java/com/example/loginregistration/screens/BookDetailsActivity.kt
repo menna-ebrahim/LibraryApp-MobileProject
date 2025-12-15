@@ -78,8 +78,7 @@ class BookDetailsActivity : ComponentActivity() {
                         FloatingActionButton(
                             onClick = {
                                 if (bookId != -1) {
-                                    // Reconstruct a temporary Book object to pass to the ViewModel
-                                    // (The ViewModel needs a Book object, even though we mainly need the ID)
+
                                     val bookToAdd = Book(
                                         id = bookId,
                                         title = title,

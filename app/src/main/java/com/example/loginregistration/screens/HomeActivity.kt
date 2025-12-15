@@ -107,9 +107,7 @@ class HomeActivity : ComponentActivity() {
                     },
                     bottomBar = {
                         NavigationBar(
-                            // 1. Remove white background by matching app background
                             containerColor = Color(0xFFF9F5F0),
-                            // 2. Remove the slight gray tint/shadow
                             tonalElevation = 0.dp
                         ) {
                             // Define clean colors for all items
@@ -190,7 +188,7 @@ class HomeActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.height(24.dp))
                         }
 
-                        // 2. Books List (Shows filtered results when searching)
+                        // 2. Books List
                         SectionHeader(title = if (isSearching && searchQuery.isNotEmpty()) "Search Results" else "Newest Books")
 
                         if (filteredBooks.isNotEmpty()) {
@@ -204,7 +202,7 @@ class HomeActivity : ComponentActivity() {
                             Text("No books yet.", color = Color.Gray, modifier = Modifier.padding(vertical = 8.dp))
                         }
 
-                        // 3. Categories (Hide when searching)
+                        // 3. Categories
                         if (!isSearching) {
                             Spacer(modifier = Modifier.height(24.dp))
                             SectionHeader(title = "Browse by Category")
@@ -239,7 +237,7 @@ class HomeActivity : ComponentActivity() {
     }
 }
 
-// ================= NEW & UPDATED UI COMPOSABLES =================
+// ================= UI COMPOSABLES =================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -396,7 +394,6 @@ fun BookItem(book: Book, onClick: () -> Unit) {
 }
 
 
-// ... inside HomeActivity.kt (at the bottom with UI Composables) ...
 @Composable
 fun CategoryRow(categories: List<Category>, onCategoryClick: (Category) -> Unit) {
     LazyRow(
@@ -432,12 +429,11 @@ fun CategoryItem(category: Category, onClick: () -> Unit) {
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Added .ifEmpty check so you can see if data is missing
         Text(
             text = category.name.ifEmpty { "Unnamed" },
             style = MaterialTheme.typography.bodySmall,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF4A3B32) // Ensuring dark text color
+            color = Color(0xFF4A3B32)
         )
     }
 }

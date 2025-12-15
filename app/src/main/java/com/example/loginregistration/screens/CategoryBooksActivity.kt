@@ -42,15 +42,12 @@ class CategoryBooksActivity : ComponentActivity() {
         val catName = intent.getStringExtra("CAT_NAME") ?: "Books"
         val catId = intent.getIntExtra("CAT_ID", -1)
 
-        // 1. Use the Singleton Database Instance (Recommended)
-        // Or better yet, use the ViewModel if you want consistency
+
         val db = BookDatabase.getInstance(applicationContext)
         val bookDao = db.BookDao()
 
         setContent {
-            // 2. COLLECT FLOW (Real-time updates)
-            // This replaces the old LaunchedEffect code.
-            // As soon as Admin adds a book with this catId, this list updates!
+
             val books by bookDao.getBooksByCategory(catId).collectAsState(initial = emptyList())
 
             MaterialTheme {
